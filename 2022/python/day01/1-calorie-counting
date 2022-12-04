@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+
+# Read the file & add each number to a list.
+# When you reach a blank line, sum the list & add that value to a list of
+# total calories.
+# Find the highest number in calories list & print it
+
+elf_inventory  = []
+calorie_totals = []
+
+with open('input.txt') as input:
+  for line in input:
+    item = line.rstrip()
+    if not item == '':
+      elf_inventory.append(int(item))
+    else:
+      calorie_totals.append(sum(elf_inventory))
+      elf_inventory = []
+
+print(max(calorie_totals))
