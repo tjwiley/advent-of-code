@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 # Read the file & add each number to a list.
-# When you reach a blank line, sum the list & add that value to a list of
-# total calories.
+# When you reach a blank line, sum the list, add that value to a list of
+# total calories, and reset inventory list.
 # Find the highest number in calories list & print it
 
 elf_inventory  = []
