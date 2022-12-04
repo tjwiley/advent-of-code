@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+## Part 1 ##
 # Read the file & add each number to a list.
 # When you reach a blank line, sum the list, add that value to a list of
 # total calories, and reset inventory list.
@@ -18,3 +19,7 @@ with open('input.txt') as input:
       elf_inventory = []
 
 print(max(calorie_totals))
+
+## Part 2 ##
+# Sort list descending, splice it to get the top 3, then print the sum.
+print(sum(sorted(calorie_totals, reverse=True)[0:3]))
