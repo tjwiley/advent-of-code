@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+
+# Strategy Guide - Elf
+#   rock     = A
+#   paper    = B
+#   scissors = C
+# Strategy Guide - Me
+#   rock     = X
+#   paper    = Y
+#   scissors = Z
+
+score_table = {
+  'choice': {
+    'opp': {
+      'A': 1,
+      'B': 2,
+      'C': 3
+    },
+    'me': {
+      'X': 1,
+      'Y': 2,
+      'Z': 3
+    }
+  },
+  'outcome': {
+    'lost': 0,
+    'draw': 3,
+    'win': 6
+  }
+}
+
+my_total_score = 0
+opp_total_score = 0
+
+# Read input file line by line.  For each line determine the winner then compute the score.
+# X beats C
+# Y beats A
+# Z beats B
+# file = 'test-input.txt'
+file = 'input.txt'
+with open(file) as input:
+  for line in input:
+    game = line.split()
+    opp_choice = game[0]
+    my_choice = game[1]
+    if file == 'test-input.txt':
+      print('Opp:', str(opp_choice))
+      print('Me:', str(my_choice))
+    my_total_score += score_table['choice']['me'][my_choice]
+    opp_total_score += score_table['choice']['opp'][opp_choice]
+
+    # Win conditions
+    if (my_choice == 'X' and opp_choice == 'C') or (my_choice == 'Y' and opp_choice == 'A') or (my_choice == 'Z' and opp_choice == 'B'):
+      my_total_score += score_table['outcome']['win']
+      if file == 'test-input.txt':
+        print('Me:', score_table['choice']['me'][my_choice] + score_table['outcome']['win'])
+        print('Opp:', score_table['choice']['opp'][opp_choice])
+        print('Game won\n')
+    # Draw
+    elif (my_choice == 'X' and opp_choice == 'A') or (my_choice == 'Y' and opp_choice == 'B') or (my_choice == 'Z' and opp_choice == 'C'):
+      my_total_score += score_table['outcome']['draw']
+      opp_total_score += score_table['outcome']['draw']
+      if file == 'test-input.txt':
+        print('Me:', score_table['choice']['me'][my_choice] + score_table['outcome']['draw'])
+        print('Opp:', score_table['choice']['opp'][opp_choice] + score_table['outcome']['draw'])
+        print('Game draw\n')
+    # Loss
+    else:
+      opp_total_score += score_table['outcome']['win']
+      if file == 'test-input.txt':
+        print('Me:', score_table['choice']['me'][my_choice])
+        print('Opp:', score_table['choice']['opp'][opp_choice] + score_table['outcome']['win'])
+        print('Game lost\n')
+
+
+print('\nTotal Scores')
+print('Me:', str(my_total_score))
+print('Opp:', str(opp_total_score))
+
+
+# Round 1 opp = 1 + 0 = 1
+# Round 2 opp = 2 + 6 = 8
+# Round 3 opp = 3 + 3 = 6
