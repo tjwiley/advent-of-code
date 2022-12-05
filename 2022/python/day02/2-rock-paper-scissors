@@ -1,0 +1,119 @@
+#!/usr/bin/env python3
+
+# Strategy Guide - Elf
+#   rock     = A
+#   paper    = B
+#   scissors = C
+# Strategy Guide - Outcome
+#   lose     = X
+#   draw     = Y
+#   win      = Z
+
+score_table = {
+  'choice': {
+    'rock': 1,
+    'paper': 2,
+    'scissors': 3
+  },
+  'outcome': {
+    'lost': 0,
+    'draw': 3,
+    'win': 6
+  }
+}
+
+# rock beats scissors
+# paper beats rock
+# scissors beats paper
+def calculate_score(opp_choice, my_choice, file):
+  my_score = 0
+  opp_score = 0
+  if file == 'test-input.txt':
+    print('Opp:', str(opp_choice))
+    print('Me:', str(my_choice))
+  # Add score for choice regardless of the outcome.
+  my_score += score_table['choice'][my_choice]
+  opp_score += score_table['choice'][opp_choice]
+
+  # Win conditions
+  if (my_choice == 'rock' and opp_choice == 'scissors') or (my_choice == 'paper' and opp_choice == 'rock') or (my_choice == 'scissors' and opp_choice == 'paper'):
+    my_score += score_table['outcome']['win']
+    if file == 'test-input.txt':
+      print('Me:', score_table['choice'][my_choice] + score_table['outcome']['win'])
+      print('Opp:', score_table['choice'][opp_choice])
+      print('Game won\n')
+  # Draw
+  elif (my_choice == opp_choice):
+    my_score += score_table['outcome']['draw']
+    opp_score += score_table['outcome']['draw']
+    if file == 'test-input.txt':
+      print('Me:', score_table['choice'][my_choice] + score_table['outcome']['draw'])
+      print('Opp:', score_table['choice'][opp_choice] + score_table['outcome']['draw'])
+      print('Game draw\n')
+  # Loss
+  else:
+    opp_score += score_table['outcome']['win']
+    if file == 'test-input.txt':
+      print('Me:', score_table['choice'][my_choice])
+      print('Opp:', score_table['choice'][opp_choice] + score_table['outcome']['win'])
+      print('Game lost\n')
+
+  game_score = {
+    'my_score': my_score,
+    'opp_score': opp_score
+  }
+  return game_score
+
+choice_table = {
+  'lose': {
+    'rock': 'scissors', # scissors loses to rock
+    'paper': 'rock', # rock loses to paper
+    'scissors': 'paper'  # paper loses to scissors
+  },
+  'draw': {
+    'rock': 'rock',
+    'paper': 'paper',
+    'scissors': 'scissors'
+  },
+  'win': {
+    'rock': 'paper', # paper beats rock
+    'paper': 'scissors', # scissors beats paper
+    'scissors': 'rock'  # rock beats scissors
+  }
+}
+
+map_helper = {
+  'choice': {
+    'A': 'rock',
+    'B': 'paper',
+    'C': 'scissors'
+  },
+  'outcome': {
+    'X': 'lose',
+    'Y': 'draw',
+    'Z': 'win'
+  }
+}
+
+file = 'input.txt'
+my_total_score = 0
+opp_total_score = 0
+
+# Read input file line by line.  For each line determine
+# the choice I need to make then compute the score.
+with open(file) as input:
+  for line in input:
+    if file == 'test-input.txt':
+      print(line)
+    game = line.split()
+    opp_choice = map_helper['choice'][game[0]]
+    outcome = map_helper['outcome'][game[1]]
+    my_choice = choice_table[outcome][opp_choice]
+    game_score = calculate_score(opp_choice, my_choice, file)
+    my_score = game_score['my_score']
+    my_total_score += game_score['my_score']
+    opp_total_score += game_score['opp_score']
+
+print('\nTotal Scores')
+print('Me:', str(my_total_score))
+print('Opp:', str(opp_total_score))
