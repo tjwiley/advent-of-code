@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+
+# Read each line, find middle, split string in half into 2 lists,
+# iterate through the first half checking for duplicates in the second half.
+import string
+# print(string.ascii_uppercase.index('Z'))
+def find_dupes(line):
+  dupes = ''
+  half_len = int(len(line) / 2)
+  first_half = line[0:half_len]
+  second_half = line[half_len:]
+  for letter in first_half:
+    if letter in second_half and letter not in dupes:
+      dupes += letter
+  return dupes
+
+def get_priority(letter):
+  if letter.islower():
+    return string.ascii_lowercase.index(letter) + 1
+  else:
+    return string.ascii_uppercase.index(letter) + 27
+
+total_priority = 0
+with open('input.txt') as input:
+  for line in input:
+    dupes = find_dupes(line)
+    for dupe in dupes:
+      total_priority += get_priority(dupe)
+
+print(total_priority)
