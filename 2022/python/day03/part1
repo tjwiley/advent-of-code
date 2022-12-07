@@ -3,7 +3,7 @@
 # Read each line, find middle, split string in half into 2 lists,
 # iterate through the first half checking for duplicates in the second half.
 import string
-# print(string.ascii_uppercase.index('Z'))
+
 def find_dupes(line):
   dupes = ''
   half_len = int(len(line) / 2)
