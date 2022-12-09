@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+
+# Read file three lines in a row.  For each three row group,
+# iterate through the first line checking for that character
+# in lines 2 & 3.  Add the priority of the common character
+# to a running total.
+import string
+from itertools import islice
+
+def get_priority(letter):
+  if letter.islower():
+    return string.ascii_lowercase.index(letter) + 1
+  else:
+    return string.ascii_uppercase.index(letter) + 27
+
+total_priority = 0
+
+with open('input.txt') as input_file:
+  badge = ''
+  while True:
+    # Interate over input_file 3 lines at a time.
+    elf_group = list(islice(input_file, 3))
+    # Break if we reach the end of the file
+    if not elf_group:
+      break
+    # Iterate over the first elf's inventory checking to see
+    # if it's also in the inventory of the other two elves.
+    # If it's in all three assign it to badge & break.
+    for letter in elf_group[0].rstrip():
+      if letter in elf_group[1].rstrip():
+        if letter in elf_group[2].rstrip():
+          badge = letter
+          break
+    # Add the priority of the badge found to the running total.
+    total_priority += get_priority(badge)
+
+  print(total_priority)
