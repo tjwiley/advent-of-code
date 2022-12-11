@@ -1,0 +1,7 @@
+[MASTER]
+disable=
+  invalid-name,
+  ; bad-continuation,
+  missing-docstring
+
+indent-string='  '
