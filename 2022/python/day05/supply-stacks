@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+
+## Part 1 | Parsing ##
+# Read first line of the file, count the total number of characters to
+# determine how many stacks there are (a stack is 3 characters wide with
+# one space inbetween).
+# 20 characters wide (with line feed) = 20/4 stacks
+# stack 1 is index 1
+# stack 2 is index 5 (1 + 4)
+# stack 3 is index 9 (1 + 4 + 4)
+# stack 4 is index 13 (1 + 4 + 4 + 4)
+# stack 5 is index 17 (1 + 4 + 4 + 4 + 4)
+# Original  Plan:
+# Iterate through the input string, if character matches /[A-Z]/
+# determine the index & insert it into the dictionary key = ((index - 1) / 4) + 1)
+# at index 0 (effectively prepending it).
+# New Plan:
+# Iterate through the input string by 4 places starting at index 1 (check only
+# indexes which contain stacks) until the last stack (determined by the length
+# of the input string).
+# If character matches /[A-Z]/, determine which stack it's in & add it
+# to the dictionary's item coresponding to the stack number.
+# number of stacks = width/4, no need to add 1 to len(line) since
+# the line ends in "\n"
+
+# stacks = {
+#   1: [],
+#   2: [],
+#   3: []
+# }
+# stacks = {
+#   1: [],
+#   2: ['D'], # stack = int(((line.index(crate) - 1) / 4) + 1); stacks[2].insert(0, crate)
+#   3: []
+# }
+# stacks = {
+#   1: ['N'],
+#   2: ['C', 'D'], # list.insert(0, crate)
+#   3: []
+# }
+
+import re
+
+# Apparently constants should be uppercase?
+FILE = 'input.txt'
+DEBUG = False
+VERBOSE = True
+
+# For debugging.  I didn't like how pprint made long lists vertical.
+def prettyprint(dictionary):
+  for key in dictionary.keys():
+    print(f"%d: %s" % (key, dictionary[key]))
+
+# Initialize the stacks dictionary.  The keys represent the stacks,
+# and the list values describe each stack.
+def init_stacks(input_file):
+  with open(input_file) as f:
+    number_of_stacks = int(len(next(f)) / 4)
+    new_stacks = {}
+    for n in range(1, number_of_stacks + 1):
+      new_stacks[n] = []
+    return new_stacks
+
+# Builds the map of the initial stacks based on the top of the input file.
+# Initialize the stacks dictionary.  Iterate over the input string by the
+# indexes of each stack.  If it contains a letter, prepend it to the
+# the corresponding dictionary items list. When the line of input is just
+# a line feed, return the map of stacks.
+def build_map(input_file):
+  map_stacks = init_stacks(input_file)
+  with open(input_file) as f:
+    for input_line in f:
+      if VERBOSE or DEBUG:
+        print(input_line)
+      if input_line == "\n":
+        break
+      else:
+        regex = re.compile('[A-Z]')
+        for stack_index in range(1, len(input_line), 4):
+          char = input_line[stack_index]
+          if DEBUG:
+            print("stack_index:", stack_index)
+            print("char:", char)
+          if regex.match(input_line[stack_index]):
+            stack = int(((stack_index - 1) / 4) + 1)
+            if DEBUG:
+              print(f"Adding %s to stack %d" % (char, stack))
+            map_stacks[stack].insert(0, char)
+      if DEBUG:
+        prettyprint(map_stacks)
+  return map_stacks
+
+stacks = build_map(FILE)
+prettyprint(stacks)
