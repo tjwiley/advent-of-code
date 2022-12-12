@@ -86,9 +86,61 @@ def build_map(input_file):
             if DEBUG:
               print(f"Adding %s to stack %d" % (char, stack))
             map_stacks[stack].insert(0, char)
-      if DEBUG:
-        prettyprint(map_stacks)
+  if VERBOSE:
+    prettyprint(map_stacks)
   return map_stacks
 
-stacks = build_map(FILE)
-prettyprint(stacks)
+
+## Part 1 | Move Crates ##
+# Figure out how to ignore stacks input & start processing the file after the
+# first line consisting only of "\n".
+# Maybe even using regex to match /^move/
+# Use regex to parse instructions
+# move (\d) from (\d) to (\d)
+# Setup a counter (moves_remaining) based on 1st capture group.  Decrease that counter with
+# every move.
+# For each move, read last element from stack list identified by 2nd capture
+# group & append it to the list identified by the 3rd capture group.
+# When EOF is reached, iterate over each stack & copy the last element to a
+# top_crates string variable then return that variable value.
+
+def CrateMover9000(file, stacks_dict):
+  with open(file) as input_file:
+    regex = re.compile('^move (\d+) from (\d+) to (\d+)$')
+    for line in input_file:
+      instruction = regex.match(line)
+      if instruction:
+        moves_remaining = int(instruction.group(1))
+        src_stack = int(instruction.group(2))
+        dest_stack = int(instruction.group(3))
+        if DEBUG:
+          print(instruction)
+          print(instruction.groups())
+          print(f"src_stack == {src_stack}")
+          print(f"dest_stack == {dest_stack}")
+          print(f"stacks_dict[{src_stack}] == {stacks_dict[src_stack]}")
+          print(f"stacks_dict[{dest_stack}] == {stacks_dict[dest_stack]}")
+        while moves_remaining > 0:
+          crate = stacks_dict[src_stack].pop()
+          if DEBUG:
+            print(f"moves_remaining == {moves_remaining}")
+            print(f"crate = '{crate}'")
+            print(f"stacks_dict[{src_stack}] = {stacks_dict[src_stack]}")
+
+          stacks_dict[dest_stack].append(crate)
+          if DEBUG:
+            print(f"stacks_dict[{dest_stack}] = {stacks_dict[dest_stack]}")
+          moves_remaining -= 1
+          if DEBUG:
+            print(f"new moves_remaining == {moves_remaining}")
+
+    top_crates = ''
+    for stack in stacks_dict.keys():
+      if stacks_dict[stack][-1]:
+        top_crates = top_crates + stacks_dict[stack][-1]
+
+    if VERBOSE:
+      prettyprint(stacks_dict)
+    return top_crates
+
+print(f"Part 1: {CrateMover9000(FILE, build_map(FILE))}")
