@@ -49,7 +49,7 @@ VERBOSE = False
 # For debugging.  I didn't like how pprint made long lists vertical.
 def prettyprint(dictionary):
   for key in dictionary.keys():
-    print(f"%d: %s" % (key, dictionary[key]))
+    print(f"{key}: {dictionary[key]}")
 
 # Initialize the stacks dictionary.  The keys represent the stacks,
 # and the list values describe each stack.
@@ -84,7 +84,7 @@ def build_map(input_file):
           if regex.match(input_line[stack_index]):
             stack = int(((stack_index - 1) / 4) + 1)
             if DEBUG:
-              print(f"Adding %s to stack %d" % (char, stack))
+              print(f"Adding {char} to stack {stack}")
             map_stacks[stack].insert(0, char)
   if VERBOSE:
     prettyprint(map_stacks)
