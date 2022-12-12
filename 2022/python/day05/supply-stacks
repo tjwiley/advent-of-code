@@ -90,6 +90,13 @@ def build_map(input_file):
     prettyprint(map_stacks)
   return map_stacks
 
+# Find the crate on the top of each stack & return them as a string.
+def get_top_crates(stacks_dict):
+  top_crates = ''
+  for stack in stacks_dict.keys():
+    if stacks_dict[stack][-1]:
+      top_crates = top_crates + stacks_dict[stack][-1]
+  return top_crates
 
 ## Part 1 | Move Crates ##
 # Figure out how to ignore stacks input & start processing the file after the
@@ -101,16 +108,7 @@ def build_map(input_file):
 # every move.
 # For each move, read last element from stack list identified by 2nd capture
 # group & append it to the list identified by the 3rd capture group.
-# When EOF is reached, iterate over each stack & copy the last element to a
-# top_crates string variable then return that variable value.
-
-def get_top_crates(stacks_dict):
-  top_crates = ''
-  for stack in stacks_dict.keys():
-    if stacks_dict[stack][-1]:
-      top_crates = top_crates + stacks_dict[stack][-1]
-  return top_crates
-
+# When EOF is reached, run the stacks_dict through top_crates().
 def CrateMover9000(file, stacks_dict):
   with open(file) as input_file:
     regex = re.compile(r'^move (\d+) from (\d+) to (\d+)$')
@@ -145,10 +143,11 @@ def CrateMover9000(file, stacks_dict):
     prettyprint(stacks_dict)
   return get_top_crates(stacks_dict)
 
+# Part 2
 # This time we can move more than 1 crate at a time.  For each instruction,
 # split src_stack into two lists (remaining, moving) based on number of crates
 # to move.  Overwrite src_stack with remaining & add moving to dest_stack.
-# When EOF is reached
+# When EOF is reached, run the stacks_dict through top_crates().
 def CrateMover9001(file, stacks_dict):
   with open(file) as input_file:
     regex = re.compile(r'^move (\d+) from (\d+) to (\d+)$')
