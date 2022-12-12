@@ -44,7 +44,7 @@ import re
 # Apparently constants should be uppercase?
 FILE = 'input.txt'
 DEBUG = False
-VERBOSE = True
+VERBOSE = False
 
 # For debugging.  I didn't like how pprint made long lists vertical.
 def prettyprint(dictionary):
@@ -104,9 +104,16 @@ def build_map(input_file):
 # When EOF is reached, iterate over each stack & copy the last element to a
 # top_crates string variable then return that variable value.
 
+def get_top_crates(stacks_dict):
+  top_crates = ''
+  for stack in stacks_dict.keys():
+    if stacks_dict[stack][-1]:
+      top_crates = top_crates + stacks_dict[stack][-1]
+  return top_crates
+
 def CrateMover9000(file, stacks_dict):
   with open(file) as input_file:
-    regex = re.compile('^move (\d+) from (\d+) to (\d+)$')
+    regex = re.compile(r'^move (\d+) from (\d+) to (\d+)$')
     for line in input_file:
       instruction = regex.match(line)
       if instruction:
@@ -134,13 +141,47 @@ def CrateMover9000(file, stacks_dict):
           if DEBUG:
             print(f"new moves_remaining == {moves_remaining}")
 
-    top_crates = ''
-    for stack in stacks_dict.keys():
-      if stacks_dict[stack][-1]:
-        top_crates = top_crates + stacks_dict[stack][-1]
+  if VERBOSE:
+    prettyprint(stacks_dict)
+  return get_top_crates(stacks_dict)
 
-    if VERBOSE:
-      prettyprint(stacks_dict)
-    return top_crates
+# This time we can move more than 1 crate at a time.  For each instruction,
+# split src_stack into two lists (remaining, moving) based on number of crates
+# to move.  Overwrite src_stack with remaining & add moving to dest_stack.
+# When EOF is reached
+def CrateMover9001(file, stacks_dict):
+  with open(file) as input_file:
+    regex = re.compile(r'^move (\d+) from (\d+) to (\d+)$')
+    for line in input_file:
+      instruction = regex.match(line)
+      if instruction:
+        crates_to_move = int(instruction.group(1))
+        src_stack = int(instruction.group(2))
+        dest_stack = int(instruction.group(3))
+        if DEBUG:
+          print(instruction)
+          print(instruction.groups())
+          print(f"crates_to_move == {crates_to_move}")
+          print(f"src_stack == {src_stack}")
+          print(f"dest_stack == {dest_stack}")
+          print(f"stacks_dict[{src_stack}] == {stacks_dict[src_stack]}")
+          print(f"stacks_dict[{dest_stack}] == {stacks_dict[dest_stack]}")
+        remaining = stacks_dict[src_stack][:-crates_to_move]
+        moving = stacks_dict[src_stack][-crates_to_move:]
+        if DEBUG:
+          print(f"remaining == {remaining}")
+          print(f"moving == {moving}")
+        stacks_dict[src_stack] = remaining
+        stacks_dict[dest_stack] = stacks_dict[dest_stack] + moving
+        if DEBUG:
+          print(f"new stacks_dict[{src_stack}] == {stacks_dict[src_stack]}")
+          print(f"new stacks_dict[{dest_stack}] == {stacks_dict[dest_stack]}")
 
+  if VERBOSE:
+    prettyprint(stacks_dict)
+  return get_top_crates(stacks_dict)
+
+
+## Main ##
 print(f"Part 1: {CrateMover9000(FILE, build_map(FILE))}")
+print(f"Part 2: {CrateMover9001(FILE, build_map(FILE))}")
