@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+
+# https://adventofcode.com/2022/day/6
+
+# Read each line from the test input.
+# Iterate over range(3, len(input_line)) slicing the line into a new 4 item
+# list each time.
+# for each n in range(3, len(input_line)); set(input_line[index - 3:index])
+# For each 4 item list, turn it into a set() & compare the lengths of the
+# original 4 item list & the new set (sets are like lists, but cannot contain
+# duplicates).
+# If the lengths are the same, this is your first unique 4 item list, break
+# from the loop & return the index of last list item
+
+FILE = 'input.txt'
+DEBUG = False
+VERBOSE = False
+
+def get_marker(stream, marker_size):
+  for index in range(marker_size, len(stream)):
+    char_no = index + 1
+    substring = stream[char_no - marker_size:char_no]
+    if DEBUG:
+      print(index, stream[index])
+      print(substring)
+      print(set(substring))
+    if len(set(substring)) == marker_size:
+      break
+  return char_no
+
+## Main ##
+with open(FILE) as input_file:
+  for line in input_file:
+    print(f"Part 1: {get_marker(line, 4)}")
+    print(f"Part 2: {get_marker(line, 14)}")
